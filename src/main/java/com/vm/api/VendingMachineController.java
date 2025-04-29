@@ -1,10 +1,10 @@
 package com.vm.api;
 
 import com.vm.application.VendingMachineService;
+import com.vm.enums.Drink;
 import com.vm.payload.payment.PaymentAmountResponse;
 import com.vm.payload.purchase.PurchaseRequest;
 import com.vm.payload.purchase.PurchaseResponse;
-import com.vm.payload.vending.VendingMachineRequest;
 import com.vm.payload.vending.VendingMachineResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,10 +42,10 @@ public class VendingMachineController {
     @Operation(
         description = "선택 음료 결제 금액 API",
         responses = {@ApiResponse(responseCode = "200", description = "OK")})
-    @GetMapping("amount")
-    public ResponseEntity<PaymentAmountResponse> totalAmount(List<VendingMachineRequest> requests) {
+    @GetMapping("select")
+    public ResponseEntity<PaymentAmountResponse> select(@RequestParam Drink item) {
 
-        return ResponseEntity.ok(vendingMachineService.totalAmount(requests));
+        return ResponseEntity.ok(vendingMachineService.select(item));
     }
 
     @Tag(name = "[자판기] 음료 구매")

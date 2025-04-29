@@ -1,7 +1,7 @@
 package com.vm.payload.purchase;
 
+import com.vm.enums.Drink;
 import com.vm.enums.PaymentType;
-import com.vm.payload.vending.VendingMachineRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
@@ -11,23 +11,14 @@ import java.util.List;
       "cashInputs": [
         {
           "cashType": "WON_1000",
-          "quantity": 2
+          "quantity": 1
         },
         {
           "cashType": "WON_500",
-          "quantity": 2
+          "quantity": 1
         }
       ],
-      "items": [
-        {
-          "item": "COLA",
-          "drinkQuantity": 2
-        },
-        {
-          "item": "WATER",
-          "drinkQuantity": 1
-        }
-      ]
+      "item": "COLA"
     }
     """)
 public record PurchaseRequest(
@@ -39,6 +30,6 @@ public record PurchaseRequest(
     List<CashInput> cashInputs,
 
     @Schema(description = "구매할 음료 목록")
-    List<VendingMachineRequest> items) {
+    Drink item) {
 
 }

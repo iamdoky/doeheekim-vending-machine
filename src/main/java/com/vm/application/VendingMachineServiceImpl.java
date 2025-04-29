@@ -1,13 +1,12 @@
 package com.vm.application;
 
+import com.vm.enums.Drink;
 import com.vm.enums.Errors;
 import com.vm.enums.PaymentType;
 import com.vm.exception.BaseBadRequestException;
 import com.vm.payload.payment.PaymentAmountResponse;
-import com.vm.payload.purchase.CashInput;
 import com.vm.payload.purchase.PurchaseRequest;
 import com.vm.payload.purchase.PurchaseResponse;
-import com.vm.payload.vending.VendingMachineRequest;
 import com.vm.payload.vending.VendingMachineResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +23,15 @@ public class VendingMachineServiceImpl implements VendingMachineService {
         return VendingMachineResponse.drinkMockList();
     }
 
-    public PaymentAmountResponse totalAmount(List<VendingMachineRequest> requests) {
+    public PaymentAmountResponse select(Drink item) {
 
-        return PaymentAmountResponse.from(
-            requests.stream()
-                .mapToInt(VendingMachineRequest::calculateAmount)
-                .sum()
-        );
+        return PaymentAmountResponse.from(item.getPrice());
     }
 
     public PurchaseResponse purchase(PurchaseRequest request) {
 
         if (PaymentType.CARD.equals(request.paymentType()))
-            return PurchaseResponse.from(purchaseByCard(request));
+            return PurchaseResponse.from(purchaseByCard());
 
         if (PaymentType.CASH.equals(request.paymentType()))
             return PurchaseResponse.from(purchaseByCash(request));
@@ -44,11 +39,10 @@ public class VendingMachineServiceImpl implements VendingMachineService {
         return PurchaseResponse.from(0);
     }
 
-    private int purchaseByCard(PurchaseRequest request) {
+    private int purchaseByCard() {
 
-        return request.items().stream()
-            .mapToInt(VendingMachineRequest::calculateAmount)
-            .sum();
+        // 카드 잔액 확인 및 결제 처리 로직 필요
+        return 0;
     }
 
     private int purchaseByCash(PurchaseRequest request) {
@@ -57,9 +51,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
             .mapToInt(cashInput -> cashInput.cashType().getAmount() * cashInput.quantity())
             .sum();
 
-        int amount = request.items().stream()
-            .mapToInt(VendingMachineRequest::calculateAmount)
-            .sum();
+        int amount = request.item().getPrice();
 
         if (inputCash < amount)
             throw new BaseBadRequestException(Errors.INSUFFICIENT_PAYMENT_AMOUNT);
